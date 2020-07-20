@@ -1,0 +1,13 @@
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\bin\Debug\PurseChezker.exe.config
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\bin\Debug\PurseChezker.exe
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\bin\Debug\PurseChezker.pdb
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\obj\Debug\PurseChezker.csprojAssemblyReference.cache
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\obj\Debug\PurseChezker.Properties.Resources.resources
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\obj\Debug\PurseChezker.csproj.GenerateResource.cache
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\obj\Debug\PurseChezker.csproj.CoreCompileInputs.cache
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\obj\Debug\PurseChezker.exe
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\obj\Debug\PurseChezker.pdb
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\bin\Debug\xNet.dll
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\obj\Debug\PurseChezker.csproj.CopyComplete
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\bin\Debug\YamlDotNet.dll
+C:\Users\Admin\source\repos\PurseChezker\PurseChezker\bin\Debug\YamlDotNet.xml
