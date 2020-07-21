@@ -1,0 +1,609 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Vostok.Configuration.Abstractions</name>
+    </assembly>
+    <members>
+        <member name="T:Vostok.Configuration.Abstractions.Attributes.AliasAttribute">
+            <summary>
+            <para>When applied to a field or property on the model, provides an alternative key to look up in <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode"/>s structure when binding from a settings tree.</para>
+            <para>By default, field and property names in the model are used as lookup keys.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.Attributes.BindByAttribute">
+            <inheritdoc />
+            <summary>
+            Specifies that settings in annotated type/field/property should be bound by an <see cref="T:Vostok.Configuration.Abstractions.ISettingsBinder`1"/> of provided type.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.Attributes.BindByAttribute.BinderType">
+            <summary>
+            The specified binder type.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.Attributes.OptionalAttribute">
+            <inheritdoc />
+            <summary>
+            Marks a field or property optional. If the value is not present or cannot be parsed it is set to default.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.Attributes.RequiredAttribute">
+            <inheritdoc />
+            <summary>
+            Marks a field or property required. The value for it must exist in settings source and have correct format.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.Attributes.RequiredByDefaultAttribute">
+            <inheritdoc />
+            <summary>
+            Marks all fields and properties required by default. See <see cref="T:Vostok.Configuration.Abstractions.Attributes.RequiredAttribute"/> for more details.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.Attributes.SecretAttribute">
+            <inheritdoc />
+            <summary>
+            <para>Marks a field/property/class secret. External loggers should not expose values of settings marked with this attribute.</para>
+            <para>Useful for sensitive settings, such as API-keys, passwords and tokens.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.Attributes.ValidateByAttribute">
+            <inheritdoc />
+            <summary>
+            Specifies that settings of this type should be validated by a validator of provided type.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.Attributes.ValidateByAttribute.#ctor(System.Type)">
+            <inheritdoc />
+            <summary>
+            Initializes a new instance of <see cref="T:Vostok.Configuration.Abstractions.Attributes.ValidateByAttribute" /> class.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.Attributes.ValidateByAttribute.ValidatorType">
+            <summary>
+            The specified validator type.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.Extensions.Observable.ObservableExtensions">
+            <summary>
+            Provides a set of static methods for subscribing delegates to observables.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.Extensions.Observable.ObservableExtensions.Subscribe``1(System.IObservable{``0},System.Action{``0})">
+            <summary>
+            Subscribes an element handler to an observable sequence.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.Extensions.Observable.ObservableExtensions.Subscribe``1(System.IObservable{``0},System.Action{``0},System.Action{System.Exception})">
+            <summary>
+            Subscribes an element handler and an exception handler to an observable sequence.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.IConfigurationProvider">
+            <summary>
+            <para>Provides settings for your application, fresh and warm.</para>
+            <para>See <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Get``1"/> and <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Observe``1"/> methods for more details.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Get``1">
+            <summary>
+            <para>Returns the most recent value of <typeparamref name="TSettings"/> from preconfigured configuration sources.</para>
+            <para>Implementations should comply to the following rules:</para>
+            <list type="bullet">
+                <item><description>If there is no source preconfigured for <typeparamref name="TSettings"/> with <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.SetupSourceFor``1(Vostok.Configuration.Abstractions.IConfigurationSource)"/>, an exception is thrown immediately.</description></item>
+                <item><description>Normally the method just returns the last configuration observed through <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Observe``1"/>.</description></item>
+                <item>
+                    <description>If an error (originating from either <see cref="T:Vostok.Configuration.Abstractions.IConfigurationSource"/>, parser or anything inbetween)
+                    happens after observing valid settings at least once, it doesn't affect the behaviour of <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Get``1"/>:
+                    the method just returns last seen valid settings. Such error are exposed to user in an implementation-specific way, such as a specialized callback.
+                </description>
+                </item>
+                <item><description>If such an error arises before observing first valid settings instance, it causes <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Get``1"/> calls to throw exceptions until first valid settings are observed.</description></item>
+                <item><description>If there is no last value and no errors (<see cref="T:Vostok.Configuration.Abstractions.IConfigurationSource"/> doesn't produce anything), this method blocks waiting for a value.</description></item>
+                <item><description>It's expected for this method to be extremely cheap and be called each time the app needs access to settings.</description></item>
+                <item><description>It's also expected for this method to be thread-safe.</description></item>
+            </list>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Get``1(Vostok.Configuration.Abstractions.IConfigurationSource)">
+            <summary>
+            <para>This method behaves similar to its parameterless counterpart (<see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Get``1"/>) with following exceptions:</para>
+            <list type="bullet">
+                <item><description>It doesn't require to set up the source for type beforehand with <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.SetupSourceFor``1(Vostok.Configuration.Abstractions.IConfigurationSource)"/>: source is passed as argument.</description></item>
+                <item>
+                    <description>
+                    It stores internal state (subscriptions to sources, cached last values) in a cache limited in size.
+                    This cache might drop mentioned state in the event of overflow, which can potentially violate the guarantee of not producing exceptions after observing first valid value.
+                    Cache overflows typically result from passing lots of distinct <see cref="T:Vostok.Configuration.Abstractions.IConfigurationSource"/> instances to this method.
+                    </description>
+                </item>
+            </list>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Observe``1">
+            <summary>
+            <para>Returns an <see cref="T:System.IObservable`1"/> that receives the new value of <typeparamref name="TSettings"/> each time it is updated from its corresponding preconfigured source.</para>
+            <para>Implementations should comply to the following rules:</para>
+            <list type="bullet">
+                <item>
+                    <description>
+                    If there is no source preconfigured for <typeparamref name="TSettings"/> with <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.SetupSourceFor``1(Vostok.Configuration.Abstractions.IConfigurationSource)"/>, an exception is thrown immediately.
+                    Else, a subscription to the corresponding source is created once for given <typeparamref name="TSettings"/>.
+                    </description>
+                </item>
+                <item><description>Returned sequence never produces <see cref="M:System.IObserver`1.OnCompleted"/> or <see cref="M:System.IObserver`1.OnError(System.Exception)"/> notifications: only valid settings instances are exposed via <see cref="M:System.IObserver`1.OnNext(`0)"/>.</description></item>
+                <item><description>Errors are exposed to user in an implementation-specific way, such as a specialized callback.</description></item>
+                <item><description>New subscribers receive current settings value (if it already exists) immediately after subscription.</description></item>
+                <item><description>It's also expected for this method to be thread-safe.</description></item>
+            </list>
+            <para>Remember to unsubscrube from returned sequence when it's no longer needed: lifetime of internal resources might be tied to user subscriptions.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Observe``1(Vostok.Configuration.Abstractions.IConfigurationSource)">
+            <summary>
+            <para>This method behaves similar to its parameterless counterpart (<see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Get``1"/>) with following exceptions:</para>
+            <list type="bullet">
+                <item><description>It doesn't require to set up the source for type beforehand with <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.SetupSourceFor``1(Vostok.Configuration.Abstractions.IConfigurationSource)"/>: source is passed as argument.</description></item>
+            </list>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.IConfigurationProvider.SetupSourceFor``1(Vostok.Configuration.Abstractions.IConfigurationSource)">
+            <summary>
+            <para>Lets the <see cref="T:Vostok.Configuration.Abstractions.IConfigurationProvider"/> know that settings of type <typeparamref name="TSettings"/> should be taken from the provided <paramref name="source"/>.</para>
+            <para>Until this method is called for <typeparamref name="TSettings"/> any attempt to <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Get``1"/> or <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Observe``1"/> settings of type <typeparamref name="TSettings"/> without explicitly specifying source will throw an exception.</para>
+            <para>If called multiple times for the same <typeparamref name="TSettings"/>, the last provided <paramref name="source"/> will be used. To set up multiple sources for a settings type, pass a combined source.</para>
+            <para>Using this method after calling <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Get``1"/> or <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.Observe``1"/> will fail with exception as dynamic reconfiguration of sources is not supported.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.IConfigurationProviderExtensions">
+            <summary>
+            A set of extensions for <see cref="T:Vostok.Configuration.Abstractions.IConfigurationProvider"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.IConfigurationProviderExtensions.WithSourceFor``1(Vostok.Configuration.Abstractions.IConfigurationProvider,Vostok.Configuration.Abstractions.IConfigurationSource)">
+            <summary>
+            Calls <see cref="M:Vostok.Configuration.Abstractions.IConfigurationProvider.SetupSourceFor``1(Vostok.Configuration.Abstractions.IConfigurationSource)"/> on the given <paramref name="provider"/> and returns the same <paramref name="provider"/>.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.IConfigurationSource">
+            <summary>
+            Provides configuration in the form of raw settings trees (<see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode"/>s).
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.IConfigurationSource.Observe">
+            <summary>
+            <para>Returns an observable sequence of raw settings along with errors encountered while updating settings.</para>
+            <para>Implementations should comply to the following rules.</para>
+            <para>A background worker periodically (and/or by signal) attempts to read and parse a new configuration from the underlying source.</para>
+            <para>If the update was successful and the new configuration differs from the old one, it should be pushed to observers. The error component in pair should be null in this case.</para>
+            <para>If the update was not successful, due to unavailability of the underlying source or inability to parse the new configuration, the pair (null, error) or (last correct value, error) should be pushed.</para>
+            <para>It's expected for this method to be thread-safe.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.ISettingsBinder`1">
+            <summary>
+            Implements binding of <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode"/>s to specific models.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.ISettingsBinder`1.Bind(Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode)">
+            <summary>
+            <para>Binds the provided <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode"/> instance to type <typeparamref name="TSettings"/>.</para>
+            <para>An exception will be thrown if the binding fails.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.ISettingsValidator`1">
+            <summary>
+            A class responsible for validation of settings of type <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.ISettingsValidator`1.Validate(`0)">
+            <summary>
+            Validates the provided <paramref name="settings"/>. Should not stop upon encountering the first error. Instead, all errors should be returned as an enumerable of human-readable messages.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.Merging.ArrayMergeStyle">
+            <summary>
+            Specifies the way array nodes are merged.
+            </summary>
+        </member>
+        <member name="F:Vostok.Configuration.Abstractions.Merging.ArrayMergeStyle.Replace">
+            <summary>
+            Replace one array with another.
+            </summary>
+        </member>
+        <member name="F:Vostok.Configuration.Abstractions.Merging.ArrayMergeStyle.Concat">
+            <summary>
+            Produce an array containing elements from both arrays. All elements from the first array, then all elements from the second, preserving order inside arrays.
+            </summary>
+        </member>
+        <member name="F:Vostok.Configuration.Abstractions.Merging.ArrayMergeStyle.Union">
+            <summary>
+            Produce an array containing unique items from both arrays. The order is the same as with <see cref="F:Vostok.Configuration.Abstractions.Merging.ArrayMergeStyle.Concat"/>. For duplicate items, the first one is kept.
+            </summary>
+        </member>
+        <member name="F:Vostok.Configuration.Abstractions.Merging.ArrayMergeStyle.PerElement">
+            <summary>
+            <para>Produce an array containing items obtained by merging corresponding items (by index) from both arrays.</para>
+            <para>If merged arrays have different items count, the "tail" of the longer array is preserved as-is.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.Merging.ObjectMergeStyle">
+            <summary>
+            Specifies the way object nodes are merged.
+            </summary>
+        </member>
+        <member name="F:Vostok.Configuration.Abstractions.Merging.ObjectMergeStyle.Deep">
+            <summary>
+            Union the children from both nodes. Then merge children with same names recursively.
+            </summary>
+        </member>
+        <member name="F:Vostok.Configuration.Abstractions.Merging.ObjectMergeStyle.Shallow">
+            <summary>
+            Compare children of both nodes by names. If the sets of names match, regardless of order, then merge the pairs of matching children recursively. Elsewise, just replace the current node with the other node.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions">
+            <summary>
+            Specifies the way to merge two <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode"/>s.
+            </summary>
+        </member>
+        <member name="F:Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions.Default">
+            <summary>
+            Default <see cref="T:Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions.ObjectMergeStyle">
+            <summary>
+            The way to merge object nodes.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions.ArrayMergeStyle">
+            <summary>
+            The way to merge array nodes.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode">
+            <summary>
+            A settings tree node representing an array of items.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode.#ctor(System.String,System.Collections.Generic.IReadOnlyList{Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode})">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode"/> with the given <paramref name="name"/> and <paramref name="children"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode"/> with the given <paramref name="name"/> and no children.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode.#ctor(System.Collections.Generic.IReadOnlyList{Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode})">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode"/> with the given <paramref name="children"/> and no name.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode.Children">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode.Merge(Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode,Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode.Equals(Vostok.Configuration.Abstractions.SettingsTree.ArrayNode)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode.GetHashCode">
+            <summary>
+            Returns the hash code of the current <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ArrayNode"/>.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode">
+            <summary>
+            <para>Represents a tree of raw settings. 'Raw' means that all values are stored as strings.</para>
+            <para>This is an intermediate object model for settings. It's purpose is to abstract away different storage formats, such as JSON, XML or any other.</para>
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode.Name">
+            <summary>
+            Name of the tree node. Null for array elements.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode.Value">
+            <summary>
+            Value of the tree node. Not null for leaf nodes only.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode.Children">
+            <summary>
+            A view of child nodes as an ordered collection. The order is same as in the source.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode.Merge(Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode,Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions)">
+            <summary>
+            Merges two settings trees by rules specified in <paramref name="options"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode.Item(System.String)">
+            <summary>
+            A view of child nodes as a collection indexed by node names. Used for nodes that represent dictionaries or classes. Array elements cannot be accessed this way.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNodeExtensions">
+            <summary>
+            A set of extensions for <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNodeExtensions.ScopeTo(Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            <para>Returns a subtree of the given settings tree. The subtree is located through descending into the tree by keys specified in <paramref name="scope"/>. Only <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode"/>s can be present along the path.</para>
+            <para>If the given path is not present in the tree, <c>null</c> is returned.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode">
+            <summary>
+            A settings tree node representing a mapping of <see cref="T:System.String"/> keys to <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode"/> values.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode.#ctor(System.String,System.Collections.Generic.IEnumerable{Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode})">
+            <summary>
+            <para>Creates a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode"/> with the given <paramref name="name"/> and <paramref name="children"/>.</para>
+            <para>All provided child nodes must have non-null names.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode"/> with the given <paramref name="name"/> and no children.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode.#ctor(System.Collections.Generic.ICollection{Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode})">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode"/> with the given <paramref name="children"/> and no name.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode.Children">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode.Merge(Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode,Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode.ToBuilder">
+            <summary>
+            Returns a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder"/> based on this <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode"/>'s contents.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode.Item(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode.Equals(Vostok.Configuration.Abstractions.SettingsTree.ObjectNode)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode.GetHashCode">
+            <summary>
+            Returns the hash code of the current <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode"/>.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder">
+            <summary>
+            <para>A builder that allows to efficiently transform an immutable <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode"/>.</para>
+            <para><see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder"/> is designed for one-time usage: use <see cref="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.SetChild(Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode)"/> method and <see cref="P:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.Name"/> property to change node content and then call <see cref="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.Build"/>.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.#ctor">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder"/> with <c>null</c> <see cref="P:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.Name"/> and empty children.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder"/> with given <paramref name="name"/> and empty children.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.#ctor(Vostok.Configuration.Abstractions.SettingsTree.ObjectNode)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder"/> starting with contents of given <paramref name="node"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.Name">
+            <summary>
+            Gets or sets node name.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.ChildrenCount">
+            <summary>
+            Returns current children count.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.Build">
+            <summary>
+            <para>Builds a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode"/> based on current builder's contents.</para>
+            <para>Note that it's not safe to continue using an instance of <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder"/> after calling <see cref="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.Build"/>.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.SetChild(Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode)">
+            <summary>
+            Saves given child node. Any existing child with the same name gets rewritten.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">Provided child node is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">Provided child node has <c>null</c> name.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.Build"/> has been called earlier.</exception>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.RemoveChild(System.String)">
+            <summary>
+            Removes a child node with given <paramref name="name"/> if it exists.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">Provided child name is <c>null</c>.</exception>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ObjectNodeBuilder.Item(System.String)">
+            <summary>
+            Returns a child node with given <paramref name="name"/> or <c>null</c> if there's no such node.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Abstractions.SettingsTree.ValueNode">
+            <summary>
+            A settings tree node representing a simple value. It must be a leaf node.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ValueNode.#ctor(System.String,System.String)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ValueNode"/> with the given <paramref name="name"/> and <paramref name="value"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ValueNode.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ValueNode"/> with the given <paramref name="value"/> and no name.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ValueNode.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:Vostok.Configuration.Abstractions.SettingsTree.ValueNode.Value">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ValueNode.Merge(Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode,Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ValueNode.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ValueNode.Equals(Vostok.Configuration.Abstractions.SettingsTree.ValueNode)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Abstractions.SettingsTree.ValueNode.GetHashCode">
+            <summary>
+            Returns the hash code of the current <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Access">
+            <summary>Only entity marked with attribute considered used.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Assign">
+            <summary>Indicates implicit assignment to a member.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature">
+            <summary>
+            Indicates implicit instantiation of a type with fixed constructor signature.
+            That means any unused constructor parameters won't be reported as such.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature">
+            <summary>Indicates implicit instantiation of a type.</summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ImplicitUseTargetFlags">
+            <summary>
+            Specify what is considered used implicitly when marked
+            with <see cref="T:JetBrains.Annotations.MeansImplicitUseAttribute"/> or <see cref="T:JetBrains.Annotations.UsedImplicitlyAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseTargetFlags.Members">
+            <summary>Members of entity marked with attribute are considered used.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseTargetFlags.WithMembers">
+            <summary>Entity marked with attribute and all its members considered used.</summary>
+        </member>
+        <member name="T:JetBrains.Annotations.CanBeNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could be <c>null</c> sometimes,
+            so the check for <c>null</c> is necessary before its usage.
+            </summary>
+            <example><code>
+            [CanBeNull] object Test() => null;
+            
+            void UseTest() {
+              var p = Test();
+              var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
+            }
+            </code></example>
+        </member>
+        <member name="T:JetBrains.Annotations.NotNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could never be <c>null</c>.
+            </summary>
+            <example><code>
+            [NotNull] object Foo() {
+              return null; // Warning: Possible 'null' assignment
+            }
+            </code></example>
+        </member>
+        <member name="T:JetBrains.Annotations.StringFormatMethodAttribute">
+            <summary>
+            Indicates that the marked method builds string by format pattern and (optional) arguments.
+            Parameter, which contains format string, should be given in constructor. The format string
+            should be in <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])"/>-like form.
+            </summary>
+            <example><code>
+            [StringFormatMethod("message")]
+            void ShowError(string message, params object[] args) { /* do something */ }
+            
+            void Foo() {
+              ShowError("Failed: {0}"); // Warning: Non-existing argument in format string
+            }
+            </code></example>
+        </member>
+        <member name="M:JetBrains.Annotations.StringFormatMethodAttribute.#ctor(System.String)">
+            <param name="formatParameterName">
+            Specifies which parameter of an annotated method should be treated as format-string
+            </param>
+        </member>
+        <member name="T:JetBrains.Annotations.UsedImplicitlyAttribute">
+            <summary>
+            Indicates that the marked symbol is used implicitly (e.g. via reflection, in external library),
+            so this symbol will not be marked as unused (as well as by other usage inspections).
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.PureAttribute">
+            <summary>
+            Indicates that a method does not make any observable state changes.
+            The same as <c>System.Diagnostics.Contracts.PureAttribute</c>.
+            </summary>
+            <example><code>
+            [Pure] int Multiply(int x, int y) => x * y;
+            
+            void M() {
+              Multiply(123, 42); // Waring: Return value of pure method is not used
+            }
+            </code></example>
+        </member>
+        <member name="T:JetBrains.Annotations.MeansImplicitUseAttribute">
+            <summary>
+            Should be used on attributes and causes ReSharper to not mark symbols marked with such attributes
+            as unused (as well as by other usage inspections)
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.PublicAPIAttribute">
+            <summary>
+            This attribute is intended to mark publicly available API
+            which should not be removed and so is treated as used.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ItemNotNullAttribute">
+            <summary>
+            Can be appplied to symbols of types derived from IEnumerable as well as to symbols of Task
+            and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+            or of the Lazy.Value property can never be null.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ItemCanBeNullAttribute">
+            <summary>
+            Can be appplied to symbols of types derived from IEnumerable as well as to symbols of Task
+            and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+            or of the Lazy.Value property can be null.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ValueProviderAttribute">
+            <summary>
+            For a parameter that is expected to be one of the limited set of values.
+            Specify fields of which type should be used as values for this parameter.
+            </summary>
+        </member>
+    </members>
+</doc>

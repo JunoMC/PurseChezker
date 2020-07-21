@@ -7,8 +7,8 @@
 
 #You need to put your license info here to active this shjt keker
 license:
-  key: xxxxx
-  user: xxxxx
+  key: 8244ade5887597c9972f4c80ce0e1841
+  user: DevDauXanh6857
 
 #Custom setting for checker
 settings:
@@ -47,6 +47,6 @@ settings:
     #export to file
     save:
       #export hit accounts
-      hit: false
+      hit: true
       #export failed accounts
       fail: true

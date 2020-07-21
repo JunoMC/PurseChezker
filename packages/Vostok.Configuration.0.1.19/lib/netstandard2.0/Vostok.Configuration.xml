@@ -1,0 +1,854 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Vostok.Configuration</name>
+    </assembly>
+    <members>
+        <member name="T:Vostok.Configuration.Binders.DefaultSettingsBinder">
+            <summary>
+            <para>Default implementation of <see cref="T:Vostok.Configuration.Binders.ISettingsBinder"/>.</para>
+            <para>Can be configured with parsers for custom simple types via <see cref="M:Vostok.Configuration.Binders.DefaultSettingsBinder.WithParserFor``1(Vostok.Configuration.Parsers.TryParse{``0})"/>.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Binders.DefaultSettingsBinder.#ctor">
+            <summary>
+            Creates a <see cref="T:Vostok.Configuration.Binders.DefaultSettingsBinder"/> instance.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Binders.DefaultSettingsBinder.Bind``1(Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Binders.DefaultSettingsBinder.WithParserFor``1(Vostok.Configuration.Parsers.TryParse{``0})">
+            <summary>
+            Adds a new simple type <typeparamref name="T"/> with the given parser.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Binders.DefaultSettingsBinder.WithCustomBinder``1(Vostok.Configuration.Abstractions.ISettingsBinder{``0})">
+            <summary>
+            Adds a new binder for type <typeparamref name="TValue"/>. For generic binders use the <see cref="M:Vostok.Configuration.Binders.DefaultSettingsBinder.WithCustomBinder(System.Type,System.Predicate{System.Type})"/> overload.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Binders.DefaultSettingsBinder.WithCustomBinder(System.Type,System.Predicate{System.Type})">
+            <summary>
+            <para>Adds a new binder of generic type.</para>
+            <para>The provided <paramref name="binderType"/> should be an open generic type, i.e. <c>typeof(MyBinder&lt;&gt;)</c>.</para>
+            <para>The <paramref name="condition"/> predicate is used to select which service types should be handled with this binder.</para> 
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Binders.ISettingsBinder">
+            <summary>
+            Implements binding of <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode"/> to specific models.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Binders.ISettingsBinder.Bind``1(Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode)">
+            <summary>
+            <para>Binds the provided <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode"/> instance to type <typeparamref name="TSettings"/>.</para>
+            <para>An exception will be thrown if the binding fails.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Binders.SecretBinder">
+            <summary>
+            A binder wrapper that treats all models as if they were marked with a <see cref="T:Vostok.Configuration.Abstractions.Attributes.SecretAttribute"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Cache.SourceCacheItem`1.BindingCacheValue">
+            <summary>
+            <para>A pair of settings node and the result of its binding.</para>
+            <para>Used for avoiding repeated binds of same node for every observer.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationPrinter.Print(System.Object)">
+            <inheritdoc cref="M:Vostok.Configuration.ConfigurationPrinter.Print(System.Object,Vostok.Configuration.Printing.PrintSettings)"/>
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationPrinter.Print(System.Object,Vostok.Configuration.Printing.PrintSettings)">
+            <summary>
+            Pretty-prints given settings object in YAML-like or JSON-like human-readable syntax. Useful for logging purposes.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.ConfigurationProvider">
+            <summary>
+            Use this class to obtain settings for your application.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.#ctor">
+            <summary>
+            Create a new <see cref="T:Vostok.Configuration.ConfigurationProvider"/> instance.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.#ctor(Vostok.Configuration.ConfigurationProviderSettings)">
+            <inheritdoc cref="M:Vostok.Configuration.ConfigurationProvider.#ctor"/>
+        </member>
+        <member name="P:Vostok.Configuration.ConfigurationProvider.Default">
+            <summary>
+            <para>Returns a static shared instance of <see cref="T:Vostok.Configuration.ConfigurationProvider"/>.</para>
+            <para>It's intended to be used by library developers to avoid lifetime management of private <see cref="T:Vostok.Configuration.ConfigurationProvider"/> objects and prevent resource leaks.</para>
+            <para>The instance returned by this property can be substituted with <see cref="M:Vostok.Configuration.ConfigurationProvider.TrySetDefault(Vostok.Configuration.ConfigurationProvider,System.Boolean)"/> method.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.TrySetDefault(Vostok.Configuration.ConfigurationProvider,System.Boolean)">
+            <summary>
+            Replaces the instance returned by <see cref="P:Vostok.Configuration.ConfigurationProvider.Default"/> property with given <paramref name="provider"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.Get``1">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.Get``1(Vostok.Configuration.Abstractions.IConfigurationSource)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.Observe``1">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.Observe``1(Vostok.Configuration.Abstractions.IConfigurationSource)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.SetupSourceFor``1(Vostok.Configuration.Abstractions.IConfigurationSource)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.SetupSourceFor(System.Type,Vostok.Configuration.Abstractions.IConfigurationSource)">
+            <inheritdoc cref="M:Vostok.Configuration.ConfigurationProvider.SetupSourceFor``1(Vostok.Configuration.Abstractions.IConfigurationSource)"/>
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.TrySetupSourceFor``1(Vostok.Configuration.Abstractions.IConfigurationSource)">
+            <summary>
+            <para>Attempts to set associate given <paramref name="source"/> with type <typeparamref name="TSettings"/>.</para>
+            <para>Returns <c>true</c> on success or <c>false</c> if a source has already been configured for this type.</para>
+            <para>See <see cref="M:Vostok.Configuration.ConfigurationProvider.SetupSourceFor(System.Type,Vostok.Configuration.Abstractions.IConfigurationSource)"/> for mor details.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.TrySetupSourceFor(System.Type,Vostok.Configuration.Abstractions.IConfigurationSource)">
+            <summary>
+            <para>Attempts to set associate given <paramref name="source"/> with type <paramref name="settingsType"/>.</para>
+            <para>Returns <c>true</c> on success or <c>false</c> if another source has already been configured for this type.</para>
+            <para>See <see cref="M:Vostok.Configuration.ConfigurationProvider.SetupSourceFor(System.Type,Vostok.Configuration.Abstractions.IConfigurationSource)"/> for mor details.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.HasSourceFor``1">
+            <summary>
+            Returns whether there is a source configured for <typeparamref name="TSettings"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.HasSourceFor(System.Type)">
+            <summary>
+            Returns whether there is a source configured for <paramref name="settingsType"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.ConfigurationProvider.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:Vostok.Configuration.ConfigurationProviderSettings">
+            <summary>
+            Settings for <see cref="T:Vostok.Configuration.ConfigurationProvider"/>.
+            </summary>
+        </member>
+        <member name="F:Vostok.Configuration.ConfigurationProviderSettings.SourceRetryCooldown">
+            <summary>
+            In case OnError() notification is received from a <see cref="T:Vostok.Configuration.Abstractions.IConfigurationSource"/>, the <see cref="T:Vostok.Configuration.ConfigurationProvider"/> will wait for <see cref="F:Vostok.Configuration.ConfigurationProviderSettings.SourceRetryCooldown"/> and then restart observing that source.
+            </summary>
+        </member>
+        <member name="F:Vostok.Configuration.ConfigurationProviderSettings.ValueRetryCooldown">
+            <summary>
+            In case an exception is encountered during a <see cref="M:Vostok.Configuration.ConfigurationProvider.Get``1"/> call, <see cref="T:Vostok.Configuration.ConfigurationProvider"/> will wait for <see cref="F:Vostok.Configuration.ConfigurationProviderSettings.ValueRetryCooldown"/> between resubscription attempts to underlying observable in order to heal.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.ConfigurationProviderSettings.Binder">
+            <summary>
+            <para>Use this to specify a custom implementation of <see cref="T:Vostok.Configuration.Binders.ISettingsBinder"/>.</para>
+            <para><see cref="T:Vostok.Configuration.Binders.DefaultSettingsBinder"/> will be used by default.</para>
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.ConfigurationProviderSettings.ErrorCallback">
+            <summary>
+            <para>An optional callback that receives all errors encountered by <see cref="M:Vostok.Configuration.ConfigurationProvider.Observe``1"/> and <see cref="M:Vostok.Configuration.ConfigurationProvider.Observe``1(Vostok.Configuration.Abstractions.IConfigurationSource)"/>.</para>
+            <para>The callback will not be called when using <see cref="M:Vostok.Configuration.ConfigurationProvider.ObserveWithErrors``1"/> or <see cref="M:Vostok.Configuration.ConfigurationProvider.ObserveWithErrors``1(Vostok.Configuration.Abstractions.IConfigurationSource)"/>.</para>
+            <para>A common use case for this callback is error logging.</para>
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.ConfigurationProviderSettings.SettingsCallback">
+            <summary>
+            <para>An optional callback that receives all new unique non-null settings instances produced by <see cref="T:Vostok.Configuration.ConfigurationProvider"/>s with these settings alongside with corresponding sources.</para>
+            <para>Useful for implementing logging of app settings.</para>
+            <para>Applies to all kinds of methods in <see cref="T:Vostok.Configuration.ConfigurationProvider"/>.</para>
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.ConfigurationProviderSettings.MaxSourceCacheSize">
+            <summary>
+            Specifies how many <see cref="T:Vostok.Configuration.Abstractions.IConfigurationSource"/>s passed to <see cref="M:Vostok.Configuration.ConfigurationProvider.Get``1(Vostok.Configuration.Abstractions.IConfigurationSource)"/>, <see cref="M:Vostok.Configuration.ConfigurationProvider.Observe``1(Vostok.Configuration.Abstractions.IConfigurationSource)"/> or <see cref="M:Vostok.Configuration.ConfigurationProvider.ObserveWithErrors``1(Vostok.Configuration.Abstractions.IConfigurationSource)"/> method a <see cref="T:Vostok.Configuration.ConfigurationProvider"/> should cache.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Extensions.IConfigurationProviderExtensions.CreateHot``1(Vostok.Configuration.Abstractions.IConfigurationProvider,Vostok.Configuration.Abstractions.IConfigurationSource,System.IDisposable@)">
+            <inheritdoc cref="M:Vostok.Configuration.Extensions.IConfigurationProviderExtensions.CreateHot``1(Vostok.Configuration.Abstractions.IConfigurationProvider,Vostok.Configuration.Abstractions.IConfigurationSource)"/>
+            <param name="subscription">A disposable subscription resulting from the call to IObservable&lt;TConfig&gt;.Subscribe()</param>
+        </member>
+        <member name="M:Vostok.Configuration.Extensions.IConfigurationProviderExtensions.CreateHot``1(Vostok.Configuration.Abstractions.IConfigurationProvider,System.IDisposable@)">
+            <inheritdoc cref="M:Vostok.Configuration.Extensions.IConfigurationProviderExtensions.CreateHot``1(Vostok.Configuration.Abstractions.IConfigurationProvider)"/>
+            <param name="subscription">A disposable subscription resulting from the call to IObservable&lt;TConfig&gt;.Subscribe()</param>
+        </member>
+        <member name="M:Vostok.Configuration.Extensions.IConfigurationProviderExtensions.CreateHot``1(Vostok.Configuration.Abstractions.IConfigurationProvider,Vostok.Configuration.Abstractions.IConfigurationSource)">
+            <inheritdoc cref="M:Vostok.Configuration.Extensions.IConfigurationProviderExtensions.CreateHot``1(Vostok.Configuration.Abstractions.IConfigurationProvider)"/>
+            <summary>
+            <para>Creates an instance of <typeparamref name="TConfig"/> interface with "hot" properties based on given <paramref name="provider"/> and <paramref name="source"/>.</para>
+            </summary>
+            <param name="source">An instance of <see cref="T:Vostok.Configuration.Abstractions.IConfigurationSource"/></param>
+        </member>
+        <member name="M:Vostok.Configuration.Extensions.IConfigurationProviderExtensions.CreateHot``1(Vostok.Configuration.Abstractions.IConfigurationProvider)">
+            <summary>
+            <para>Creates an instance of <typeparamref name="TConfig"/> interface with "hot" properties based on given <paramref name="provider"/> with a preconfigured source of <typeparamref name="TConfig"/>.</para>
+            </summary>
+            <param name="provider">An instance of <see cref="T:Vostok.Configuration.Abstractions.IConfigurationProvider"/></param>
+            <typeparam name="TConfig">An interface type</typeparam>
+            <returns>The instance of <typeparamref name="TConfig"/></returns>
+            <exception cref="T:System.ArgumentException">Provided <typeparamref name="TConfig"/> type is not an interface.</exception>
+            <remarks>
+            <para>The properties may not be consistent with each other at any given instant.</para>
+            <para>This means that accessing multiple properties of the returned object may yield results from different versions of configuration.</para>
+            <para>This inconsistency may be avoided by using nested configuration classes/interfaces:</para>
+            <code>
+            interface IConfig
+            {
+                // Observing SubConfig1 and SubConfig2 may yield results from different configurations due to race condition.
+                ISubConfig1 SubConfig1 { get; }
+                ISubConfig2 SubConfig2 { get; }
+            }
+            interface ISubConfig1
+            {
+                int MaxCount { get; }
+                bool EnableFeature { get; }
+            }
+            class App
+            {
+                public void Run(IConfigurationProvider provider)
+                {
+                    var config = provider.CreateHot&lt;IConfig&gt;();
+                    var subConfig1 = config.SubConfig1;
+                    // Consistently observe all properties of subConfig1.
+                }
+            }
+            </code>
+            </remarks>
+        </member>
+        <member name="T:Vostok.Configuration.Extensions.Observable.ObservableExtensions">
+            <summary>
+            Exposes some useful extensions methods from Rx.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Extensions.Observable.ObservableExtensions.Select``2(System.IObservable{``0},System.Func{``0,``1})">
+            <summary>
+            Projects each element of an observable sequence into a new form.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Extensions.Observable.ObservableExtensions.Where``1(System.IObservable{``0},System.Func{``0,System.Boolean})">
+            <summary>
+            Filters the elements of an observable sequence based on a predicate.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Extensions.Observable.ObservableExtensions.DistinctUntilChanged``1(System.IObservable{``0})">
+            <summary>
+            Returns an observable sequence that contains only distinct contiguous elements.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Extensions.Observable.ObservableExtensions.DistinctUntilChanged``2(System.IObservable{``0},System.Func{``0,``1})">
+            <summary>
+            Returns an observable sequence that contains only distinct contiguous elements.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Extensions.Observable.ObservableExtensions.Do``1(System.IObservable{``0},System.Action{``0})">
+            <summary>
+            Invokes an action for each element in the observable sequence.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Extensions.Observable.ObservableExtensions.Do``1(System.IObservable{``0},System.Action{``0},System.Action{System.Exception})">
+            <summary>
+            Invokes an action for each element or error in the observable sequence.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Helpers.SecurityHelper.IsSecret(System.Reflection.MemberInfo)">
+            <summary>
+            Returns <c>true</c> if given <see cref="!:member"/> should be considered a secret setting, or <c>false</c> otherwise.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Helpers.SecurityHelper.IsSecret(System.Type)">
+            <summary>
+            Returns <c>true</c> if all members of given <see cref="!:type"/> should be considered secret settings, or <c>false</c> otherwise.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Helpers.SecurityHelper.RegisterCustomSecretAttribute``1">
+            <summary>
+            Registers an attribute of given <typeparamref name="TAttribute"/> type to function similarly to built-in <see cref="T:Vostok.Configuration.Abstractions.Attributes.SecretAttribute"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Helpers.SecurityHelper.RegisterCustomSecretAttribute(System.Type)">
+            <summary>
+            Registers an attribute of given <paramref name="attributeType"/> to function similarly to built-in <see cref="T:Vostok.Configuration.Abstractions.Attributes.SecretAttribute"/>.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Helpers.SkipVisibilityChecksHelper">
+            <summary>
+            https://github.com/Microsoft/vs-mef/blob/master/src/Microsoft.VisualStudio.Composition/Reflection/SkipClrVisibilityChecks.cs
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Primitives.DataRate">
+            <summary>
+            Represents a rate of data transfer.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.#ctor(System.Int64)">
+            <summary>
+            Creates a new instance of <see cref="T:Vostok.Configuration.Primitives.DataRate"/> class.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.FromBytesPerSecond(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given number of bytes per second.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.FromKilobytesPerSecond(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given number of kilobytes per second.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.FromMegabytesPerSecond(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given number of megabytes per second.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.FromGigabytesPerSecond(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given number of gigabytes per second.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.FromTerabytesPerSecond(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given number of terabytes per second.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.FromPetabytesPerSecond(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given number of petabytes per second.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.TryParse(System.String,Vostok.Configuration.Primitives.DataRate@)">
+            <summary>
+            Attempts to parse <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from a string.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.Parse(System.String)">
+            <summary>
+            <para>Attempts to parse <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from a string.</para>
+            <para>In case of failure a <see cref="T:System.FormatException"/> is thrown.</para>
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Primitives.DataRate.BytesPerSecond">
+            <summary>
+            Returns the total number of bytes per second in current <see cref="T:Vostok.Configuration.Primitives.DataRate"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Primitives.DataRate.KilobytesPerSecond">
+            <summary>
+            Returns the total number of kilobytes per second in current <see cref="T:Vostok.Configuration.Primitives.DataRate"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Primitives.DataRate.MegabytesPerSecond">
+            <summary>
+            Returns the total number of megabytes per second in current <see cref="T:Vostok.Configuration.Primitives.DataRate"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Primitives.DataRate.GigabytesPerSecond">
+            <summary>
+            Returns the total number of gigabytes per second in current <see cref="T:Vostok.Configuration.Primitives.DataRate"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Primitives.DataRate.TerabytesPerSecond">
+            <summary>
+            Returns the total number of terabytes per second in current <see cref="T:Vostok.Configuration.Primitives.DataRate"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Primitives.DataRate.PetabytesPerSecond">
+            <summary>
+            Returns the total number of petabytes per second in current <see cref="T:Vostok.Configuration.Primitives.DataRate"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.ToString(System.Boolean)">
+            <inheritdoc cref="M:Vostok.Configuration.Primitives.DataRate.ToString"/>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.ToString">
+            <summary>
+            Returns a string representation of current <see cref="T:Vostok.Configuration.Primitives.DataRate"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.Equals(Vostok.Configuration.Primitives.DataRate)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRate.CompareTo(Vostok.Configuration.Primitives.DataRate)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.BytesPerSecond(System.UInt16)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given bytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.BytesPerSecond(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given bytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.BytesPerSecond(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given bytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.KilobytesPerSecond(System.UInt16)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given kilobytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.KilobytesPerSecond(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given kilobytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.KilobytesPerSecond(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given kilobytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.KilobytesPerSecond(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given kilobytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.MegabytesPerSecond(System.UInt16)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given megabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.MegabytesPerSecond(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given megabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.MegabytesPerSecond(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given megabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.GigabytesPerSecond(System.UInt16)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given gigabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.GigabytesPerSecond(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given gigabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.GigabytesPerSecond(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given gigabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.GigabytesPerSecond(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given gigabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.TerabytesPerSecond(System.UInt16)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given terabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.TerabytesPerSecond(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given terabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.TerabytesPerSecond(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given terabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.TerabytesPerSecond(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given terabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.PetabytesPerSecond(System.UInt16)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given petabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.PetabytesPerSecond(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given petabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.PetabytesPerSecond(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given petabytes per second value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataRateConversionExtensions.PetabytesPerSecond(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataRate"/> from given petabytes per second value.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Primitives.DataSize">
+            <summary>
+            Represents an amount of data.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.#ctor(System.Int64)">
+            <summary>
+            Creates a new instance of <see cref="T:Vostok.Configuration.Primitives.DataSize"/> class.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.FromBytes(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given number of bytes.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.FromKilobytes(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given number of kilobytes.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.FromMegabytes(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given number of megabytes.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.FromGigabytes(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given number of gigabytes.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.FromTerabytes(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given number of terabytes.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.FromPetabytes(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given number of petabytes.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.TryParse(System.String,Vostok.Configuration.Primitives.DataSize@)">
+            <summary>
+            Attempts to parse <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from a string.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.Parse(System.String)">
+            <summary>
+            <para>Attempts to parse <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from a string.</para>
+            <para>In case of failure a <see cref="T:System.FormatException"/> is thrown.</para>
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Primitives.DataSize.Bytes">
+            <summary>
+            Returns the total number of bytes in current <see cref="T:Vostok.Configuration.Primitives.DataSize"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Primitives.DataSize.TotalKilobytes">
+            <summary>
+            Returns the total number of kilobytes in current <see cref="T:Vostok.Configuration.Primitives.DataSize"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Primitives.DataSize.TotalMegabytes">
+            <summary>
+            Returns the total number of megabytes in current <see cref="T:Vostok.Configuration.Primitives.DataSize"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Primitives.DataSize.TotalGigabytes">
+            <summary>
+            Returns the total number of gigabytes in current <see cref="T:Vostok.Configuration.Primitives.DataSize"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Primitives.DataSize.TotalTerabytes">
+            <summary>
+            Returns the total number of terabytes in current <see cref="T:Vostok.Configuration.Primitives.DataSize"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Primitives.DataSize.TotalPetabytes">
+            <summary>
+            Returns the total number of petabytes in current <see cref="T:Vostok.Configuration.Primitives.DataSize"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.ToString(System.Boolean)">
+            <inheritdoc cref="M:Vostok.Configuration.Primitives.DataSize.ToString" />
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.ToString">
+            <summary>
+            Returns a string representation of current <see cref="T:Vostok.Configuration.Primitives.DataSize"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.Equals(Vostok.Configuration.Primitives.DataSize)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSize.CompareTo(Vostok.Configuration.Primitives.DataSize)">
+            <inheritdoc />
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Bytes(System.UInt16)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given bytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Bytes(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given bytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Bytes(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given bytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Kilobytes(System.UInt16)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given kilobytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Kilobytes(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given kilobytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Kilobytes(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given kilobytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Kilobytes(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given kilobytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Megabytes(System.UInt16)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given megabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Megabytes(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given megabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Megabytes(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given megabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Megabytes(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given megabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Gigabytes(System.UInt16)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given gigabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Gigabytes(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given gigabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Gigabytes(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given gigabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Gigabytes(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given gigabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Terabytes(System.UInt16)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given terabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Terabytes(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given terabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Terabytes(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given terabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Terabytes(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given terabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Petabytes(System.UInt16)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given petabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Petabytes(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given petabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Petabytes(System.Int64)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given petabytes value.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Primitives.DataSizeConversionExtensions.Petabytes(System.Double)">
+            <summary>
+            Creates a new <see cref="T:Vostok.Configuration.Primitives.DataSize"/> from given petabytes value.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Printing.PrintSettings.HideSecretValues">
+            <summary>
+            If set to <c>true</c>, <see cref="T:Vostok.Configuration.ConfigurationPrinter"/> will hide values of secret fields and properties.
+            </summary>
+        </member>
+        <member name="F:Vostok.Configuration.Printing.PrintSettings.Format">
+            <summary>
+            Format to print objects in.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Printing.PrintSettings.InitialIndent">
+            <summary>
+            If set to <c>true</c> initial indent will be applied.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Access">
+            <summary>Only entity marked with attribute considered used.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Assign">
+            <summary>Indicates implicit assignment to a member.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature">
+            <summary>
+            Indicates implicit instantiation of a type with fixed constructor signature.
+            That means any unused constructor parameters won't be reported as such.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature">
+            <summary>Indicates implicit instantiation of a type.</summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ImplicitUseTargetFlags">
+            <summary>
+            Specify what is considered used implicitly when marked
+            with <see cref="T:JetBrains.Annotations.MeansImplicitUseAttribute"/> or <see cref="T:JetBrains.Annotations.UsedImplicitlyAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseTargetFlags.Members">
+            <summary>Members of entity marked with attribute are considered used.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseTargetFlags.WithMembers">
+            <summary>Entity marked with attribute and all its members considered used.</summary>
+        </member>
+        <member name="T:JetBrains.Annotations.CanBeNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could be <c>null</c> sometimes,
+            so the check for <c>null</c> is necessary before its usage.
+            </summary>
+            <example><code>
+            [CanBeNull] object Test() => null;
+            
+            void UseTest() {
+              var p = Test();
+              var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
+            }
+            </code></example>
+        </member>
+        <member name="T:JetBrains.Annotations.NotNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could never be <c>null</c>.
+            </summary>
+            <example><code>
+            [NotNull] object Foo() {
+              return null; // Warning: Possible 'null' assignment
+            }
+            </code></example>
+        </member>
+        <member name="T:JetBrains.Annotations.StringFormatMethodAttribute">
+            <summary>
+            Indicates that the marked method builds string by format pattern and (optional) arguments.
+            Parameter, which contains format string, should be given in constructor. The format string
+            should be in <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])"/>-like form.
+            </summary>
+            <example><code>
+            [StringFormatMethod("message")]
+            void ShowError(string message, params object[] args) { /* do something */ }
+            
+            void Foo() {
+              ShowError("Failed: {0}"); // Warning: Non-existing argument in format string
+            }
+            </code></example>
+        </member>
+        <member name="M:JetBrains.Annotations.StringFormatMethodAttribute.#ctor(System.String)">
+            <param name="formatParameterName">
+            Specifies which parameter of an annotated method should be treated as format-string
+            </param>
+        </member>
+        <member name="T:JetBrains.Annotations.UsedImplicitlyAttribute">
+            <summary>
+            Indicates that the marked symbol is used implicitly (e.g. via reflection, in external library),
+            so this symbol will not be marked as unused (as well as by other usage inspections).
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.PureAttribute">
+            <summary>
+            Indicates that a method does not make any observable state changes.
+            The same as <c>System.Diagnostics.Contracts.PureAttribute</c>.
+            </summary>
+            <example><code>
+            [Pure] int Multiply(int x, int y) => x * y;
+            
+            void M() {
+              Multiply(123, 42); // Waring: Return value of pure method is not used
+            }
+            </code></example>
+        </member>
+        <member name="T:JetBrains.Annotations.MeansImplicitUseAttribute">
+            <summary>
+            Should be used on attributes and causes ReSharper to not mark symbols marked with such attributes
+            as unused (as well as by other usage inspections)
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.PublicAPIAttribute">
+            <summary>
+            This attribute is intended to mark publicly available API
+            which should not be removed and so is treated as used.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ItemNotNullAttribute">
+            <summary>
+            Can be appplied to symbols of types derived from IEnumerable as well as to symbols of Task
+            and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+            or of the Lazy.Value property can never be null.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ItemCanBeNullAttribute">
+            <summary>
+            Can be appplied to symbols of types derived from IEnumerable as well as to symbols of Task
+            and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+            or of the Lazy.Value property can be null.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ValueProviderAttribute">
+            <summary>
+            For a parameter that is expected to be one of the limited set of values.
+            Specify fields of which type should be used as values for this parameter.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,479 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Vostok.Configuration.Sources</name>
+    </assembly>
+    <members>
+        <member name="T:Vostok.Configuration.Sources.Combined.CombinedSource">
+            <summary>
+            <para>Returns settings combined from all settings returned by the provided sources.</para>
+            <para>Order of the sources is important: settings from sources that come later in the array have greater priority.</para>
+            <para>New settings are pushed to subscribers each time one of the sources generates new settings.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Combined.CombinedSource.Observe">
+            <inheritdoc />
+        </member>
+        <member name="T:Vostok.Configuration.Sources.CommandLine.CommandLineSource">
+            <summary>
+            <para>A source that provides settings parsed from given command line arguments.</para>
+            <para>Supports 7 flavors of key-value syntax:</para>
+            <list type="bullet">
+                <item><description><c>--key=value</c></description></item>
+                <item><description><c>--key value</c></description></item>
+                <item><description><c>-key=value</c></description></item>
+                <item><description><c>-key value</c></description></item>
+                <item><description><c>/key=value</c></description></item>
+                <item><description><c>/key value</c></description></item>
+                <item><description><c>key=value</c></description></item>
+            </list>
+            <para>Keys with dots (such as <c>"a.b.c"</c>) are treated as hierarchical and get split into segments.</para>
+            <para>Multiple occurences of the same key are merged into arrays.</para>
+            <para>Standalone keys may be optionally supplied with a default value.</para>
+            <para>Standalone values may be optionally grouped under default key.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.ConfigurationSourceExtensions">
+            <summary>
+            Extension methods for <see cref="T:Vostok.Configuration.Abstractions.IConfigurationSource"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.ScopeTo(Vostok.Configuration.Abstractions.IConfigurationSource,System.String[])">
+            <summary>
+            Wraps the provided <paramref name="source"/> into a <see cref="T:Vostok.Configuration.Sources.Scoped.ScopedSource"/> with given <paramref name="scope"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.CombineWith(Vostok.Configuration.Abstractions.IConfigurationSource,Vostok.Configuration.Abstractions.IConfigurationSource,Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions)">
+            <summary>
+            Returns a new <see cref="T:Vostok.Configuration.Sources.Combined.CombinedSource"/> constructed using given <see cref="T:Vostok.Configuration.Abstractions.IConfigurationSource"/>s.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.CombineWith(Vostok.Configuration.Abstractions.IConfigurationSource,Vostok.Configuration.Abstractions.IConfigurationSource[])">
+            <inheritdoc cref="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.CombineWith(Vostok.Configuration.Abstractions.IConfigurationSource,Vostok.Configuration.Abstractions.IConfigurationSource,Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions)"/>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.CombineWith(Vostok.Configuration.Abstractions.IConfigurationSource,Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions,Vostok.Configuration.Abstractions.IConfigurationSource[])">
+            <inheritdoc cref="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.CombineWith(Vostok.Configuration.Abstractions.IConfigurationSource,Vostok.Configuration.Abstractions.IConfigurationSource,Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions)"/>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.CombineWith(Vostok.Configuration.Abstractions.IConfigurationSource,System.Collections.Generic.IEnumerable{Vostok.Configuration.Abstractions.IConfigurationSource},Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions)">
+            <inheritdoc cref="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.CombineWith(Vostok.Configuration.Abstractions.IConfigurationSource,Vostok.Configuration.Abstractions.IConfigurationSource,Vostok.Configuration.Abstractions.Merging.SettingsMergeOptions)"/>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.Transform(Vostok.Configuration.Abstractions.IConfigurationSource,System.Func{Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode,Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode})">
+            <summary>
+            Wraps provided <paramref name="source"/> into a <see cref="T:Vostok.Configuration.Sources.Transforming.TransformingSource"/> with given <paramref name="transform"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.Transform(Vostok.Configuration.Abstractions.IConfigurationSource,Vostok.Configuration.Sources.Transforming.NodeTransformer)">
+            <summary>
+            Wraps provided <paramref name="source"/> into a <see cref="T:Vostok.Configuration.Sources.Transforming.TransformingSource"/> with given <paramref name="transformer"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.Nest(Vostok.Configuration.Abstractions.IConfigurationSource,System.String[])">
+            <summary>
+            Wraps provided <paramref name="source"/> into a <see cref="T:Vostok.Configuration.Sources.Nesting.NestingSource"/> with given <paramref name="scopes"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.Freeze(Vostok.Configuration.Abstractions.IConfigurationSource)">
+            <summary>
+            Wraps provided <paramref name="source"/> into a <see cref="T:Vostok.Configuration.Sources.Frozen.FrozenSource"/>.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.ConfigurationSourceExtensions.Substitute(Vostok.Configuration.Abstractions.IConfigurationSource,Vostok.Configuration.Sources.Templating.Substitution[])">
+            <summary>
+            Wraps provided <paramref name="source"/> into a <see cref="T:Vostok.Configuration.Sources.Templating.TemplatingSource"/> with given <paramref name="substitutions"/>.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Constant.ConstantSource">
+            <summary>
+            <para>Propagates the settings specified in constructor to new subscribers.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Constant.ConstantSource.Observe">
+            <inheritdoc />
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Constant.LazyConstantSource">
+            <summary>
+            <para>Obtains settings once from the given provider and then propagates them to new subscribers.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Constant.LazyConstantSource.Observe">
+            <inheritdoc />
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Environment.EnvironmentVariablesSource">
+            <summary>
+            <para>Parses settings from application's environment variables.</para>
+            <para>Multi-level keys are supported, like A.B.C = D</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Environment.EnvironmentVariablesSource.#ctor">
+            <summary>
+            <para>Creates an <see cref="T:Vostok.Configuration.Sources.Environment.EnvironmentVariablesSource" /> instance.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Extensions.Observable.ObservableExtensions">
+            <summary>
+            Exposes some useful extensions methods from Rx.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Extensions.Observable.ObservableExtensions.Select``2(System.IObservable{``0},System.Func{``0,``1})">
+            <summary>
+            Projects each element of an observable sequence into a new form.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Extensions.Observable.ObservableExtensions.Where``1(System.IObservable{``0},System.Func{``0,System.Boolean})">
+            <summary>
+            Filters the elements of an observable sequence based on a predicate.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Extensions.Observable.ObservableExtensions.DistinctUntilChanged``1(System.IObservable{``0})">
+            <summary>
+            Returns an observable sequence that contains only distinct contiguous elements.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Extensions.Observable.ObservableExtensions.DistinctUntilChanged``2(System.IObservable{``0},System.Func{``0,``1})">
+            <summary>
+            Returns an observable sequence that contains only distinct contiguous elements.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.File.FileSource">
+            <summary>
+            <para>Note: this class is intended to be used only by those implementing their own configuration sources.</para>
+            <para>A base class for all configuration sources that read settings from a file.</para>
+            <para>Descendants should only specify how to parse file contents into a settings tree.</para>
+            <para>The file is read upon receiving a file changed event and once in a period specified in settings.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.File.FileSource.Observe">
+            <inheritdoc />
+        </member>
+        <member name="T:Vostok.Configuration.Sources.File.FileSourceSettings">
+            <summary>
+            Settings for <see cref="T:Vostok.Configuration.Sources.File.FileSource"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Sources.File.FileSourceSettings.FilePath">
+            <summary>
+            Path to the file to read settings from. This setting is required.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Sources.File.FileSourceSettings.Encoding">
+            <summary>
+            Encoding to use when reading the settings file.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Sources.File.FileSourceSettings.FileWatcherPeriod">
+            <summary>
+            <para><see cref="T:Vostok.Configuration.Sources.File.FileSource"/> updates settings from file each <see cref="P:Vostok.Configuration.Sources.File.FileSourceSettings.FileWatcherPeriod"/>.</para>
+            <para>Settings are also updated upon receiving a file changed event.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Frozen.FrozenSource">
+            <summary>
+            <para>A source wrapper that effectively "freezes" the underlying source after receiving first settings.</para>
+            <para>Passes any errors coming before first settings are observed (doesn't cache errors forever).</para>
+            <para>Note that first settings mentioned above are such in the sense of coming first since subscription, not since creation of the source itself.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Helpers.ObservableExtensions">
+            <summary>
+            <para>Note: this class is intended to be used only by those implementing their own configuration sources.</para>
+            <para>See <see cref="T:Vostok.Configuration.Sources.File.FileSource"/> implementation for a usage example.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Helpers.ObservableExtensions.SelectValueOrError``2(System.IObservable{``0},System.Func{``0,``1})">
+            <summary>
+            Returns (<paramref name="selector"/>(value), null) normally, and (null, error) in case the <paramref name="selector"/>(value) call fails.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Helpers.ObservableExtensions.SelectValueOrError``2(System.IObservable{System.ValueTuple{``0,System.Exception}},System.Func{``0,``1})">
+            <summary>
+            <para>Returns <c>(selector(sourceValue), null)</c> normally, and <c>(null, error)</c> in case <paramref name="selector"/> call fails.</para>
+            <para>Propagates any source errors as <c>(null, sourceError)</c> pairs without invoking <paramref name="selector"/>.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Helpers.ObservableHelpers">
+            <summary>
+            <para>Note: this class is intended to be used only by those implementing their own configuration sources.</para>
+            <para>See <see cref="T:Vostok.Configuration.Sources.File.FileSource"/> implementation for a usage example.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Helpers.ObservableHelpers.PeriodicalSignalsFromNow(System.TimeSpan)">
+            <summary>
+            Returns an observable where an event happens once each <paramref name="period"/>. First event occurs immediately.
+            </summary>
+            <param name="period"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Manual.ManualFeedSource">
+            <summary>
+            Represents a source whose settings can be updated externally by manually calling <see cref="M:Vostok.Configuration.Sources.Manual.ManualFeedSource.Push(Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode,System.Exception)"/> method.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Manual.ManualFeedSource.Push(Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode,System.Exception)">
+            <summary>
+            Pushes given <paramref name="settings"/> and <paramref name="error"/> to all subscribed observers.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Manual.ManualFeedSource.Observe">
+            <inheritdoc />
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Manual.ManualFeedSource`1">
+            <summary>
+            <para>Represents a source whose settings can be updated externally by manually calling <see cref="M:Vostok.Configuration.Sources.Manual.ManualFeedSource`1.Push(`0)"/> method.</para>
+            <para>Automatically applies a transform to all user-provided values to turn them into <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode"/>s.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Manual.ManualFeedSource`1.Push(`0)">
+            <summary>
+            <para>Attempts to convert given <paramref name="value"/> to <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode"/> and push it to all observers.</para>
+            <para>In the event of error, pushes a <c>(null, exception)</c> pair instead.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Manual.ManualFeedSource`1.Observe">
+            <inheritdoc />
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Nesting.NestingSource">
+            <summary>
+            A wrapper source that nests the output of its base source into a sequence of <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ObjectNode"/>s with given names.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Object.ObjectSource">
+            <summary>
+            <para>A source which returns settings from the object provided by user.</para>
+            <para>Object can contain primitive types, dictionaries, sequences and other nested objects as public fields and properties.
+            Keys of dictionaries must be of primitive types, enums, strings or guids. Nested objects should also satisfy conditions listed above.
+            If any object explicitly overrides <see cref="M:System.Object.ToString"/> method then it's result will be used as value for ISettingsNode.
+            When passing null into a constructor, the null should be explicitly type cast. For example:
+            <list type="bullet">
+                <item>var source = new ObjectSource((CustomObject) null);</item>
+                <item>var source = new ObjectSource((<see cref="T:Vostok.Configuration.Sources.Object.ObjectSourceSettings"/>) null);</item>
+            </list>
+            See also <see cref="T:Vostok.Configuration.Sources.Object.ObjectSourceSettings"/>.</para>
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Object.ObjectSourceSettings">
+            <summary>
+            Settings for <see cref="T:Vostok.Configuration.Sources.Object.ObjectSource"/>.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Sources.Object.ObjectSourceSettings.IgnoreFieldsWithNullValue">
+            <summary>
+            If set, <see cref="T:Vostok.Configuration.Sources.Object.ObjectSource"/> does not include fields and properties with null value in settings tree.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Scoped.ScopedSource">
+            <summary>
+            A source which returns settings from the underlying source scoped to the given scope.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Scoped.ScopedSource.Observe">
+            <inheritdoc />
+        </member>
+        <member name="T:Vostok.Configuration.Sources.SettingsTree.TreeFactory">
+            <summary>
+            <para>Note: this class is intended to be used only by those implementing their own configuration sources.</para>
+            <para>Contains helper methods allowing to create a settings tree from a sequence of keys.</para>
+            <para>See <see cref="T:Vostok.Configuration.Sources.Environment.EnvironmentVariablesSource"/> implementation for a usage example.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.SettingsTree.TreeFactory.CreateTreeByMultiLevelKey(System.String,System.String[],System.String)">
+            <inheritdoc cref="M:Vostok.Configuration.Sources.SettingsTree.TreeFactory.CreateTreeByMultiLevelKey(System.String,System.Collections.Generic.IEnumerable{System.String},Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode)"/>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.SettingsTree.TreeFactory.CreateTreeByMultiLevelKey(System.String,System.String[],System.String[])">
+            <inheritdoc cref="M:Vostok.Configuration.Sources.SettingsTree.TreeFactory.CreateTreeByMultiLevelKey(System.String,System.Collections.Generic.IEnumerable{System.String},Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode)"/>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.SettingsTree.TreeFactory.CreateTreeByMultiLevelKey(System.String,System.Collections.Generic.IEnumerable{System.String},Vostok.Configuration.Abstractions.SettingsTree.ISettingsNode)">
+            <summary>
+            Creates a settings tree with a path specified by <paramref name="keys"/> and ending with given <paramref name="value"/> node.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Switching.SwitchingSource">
+            <summary>
+            A source that proxies from an underlying source that can be dynamically swapped to another one without resubscribing.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Templating.Substitution">
+            <summary>
+            An instance of <see cref="T:Vostok.Configuration.Sources.Templating.Substitution"/> instructs on how to replace a single named placeholder in settings values.
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Templating.Substitution.#ctor(System.String,System.String)">
+            <param name="name">See <see cref="P:Vostok.Configuration.Sources.Templating.Substitution.Name"/>.</param>
+            <param name="value">See <see cref="P:Vostok.Configuration.Sources.Templating.Substitution.Value"/>.</param>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Templating.Substitution.#ctor(System.String,System.Func{System.String})">
+            <param name="name">See <see cref="P:Vostok.Configuration.Sources.Templating.Substitution.Name"/>.</param>
+            <param name="valueProvider">See <see cref="P:Vostok.Configuration.Sources.Templating.Substitution.Value"/>. Re-evaluated only on settings updates.</param>
+        </member>
+        <member name="P:Vostok.Configuration.Sources.Templating.Substitution.Name">
+            <summary>
+            Name of the placeholder in settings to look for. Name 'Key' corresponds to the '#{Key}' placeholder.
+            </summary>
+        </member>
+        <member name="P:Vostok.Configuration.Sources.Templating.Substitution.Value">
+            <summary>
+            Value to use instead of the placeholder.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Templating.TemplatingSource">
+            <summary>
+            Replaces placeholders (like <c>#{this}</c>) in <see cref="T:Vostok.Configuration.Abstractions.SettingsTree.ValueNode"/>s with values according to a set of <see cref="T:Vostok.Configuration.Sources.Templating.Substitution"/>s.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Templating.TemplatingSourceOptions">
+            <summary>
+            Configuration of <see cref="T:Vostok.Configuration.Sources.Templating.TemplatingSource"/>.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Transforming.TransformingSource">
+            <summary>
+            A wrapper source that may apply an arbitrary transform to settings returned by its base source. 
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Watchers.IWatcherFactory`2">
+            <summary>
+            <para>Note: this class is intended to be used only by those implementing their own configuration sources.</para>
+            <para>A generic settings watcher factory to be used in <see cref="T:Vostok.Configuration.Sources.Watchers.WatcherCache`2"/>.</para>
+            <para>See <see cref="T:Vostok.Configuration.Sources.File.FileSource"/> implementation for a usage example.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Watchers.IWatcherFactory`2.CreateWatcher(`0)">
+            <summary>
+            Creates and starts a new generic settings watcher.
+            </summary>
+        </member>
+        <member name="T:Vostok.Configuration.Sources.Watchers.WatcherCache`2">
+            <summary>
+            <para>Note: this class is intended to be used only by those implementing their own configuration sources.</para>
+            <para>A helper class that implements a cache of generic settings watchers with in-built garbage collection.</para>
+            <para>See <see cref="T:Vostok.Configuration.Sources.File.FileSource"/> implementation for a usage example.</para>
+            </summary>
+        </member>
+        <member name="M:Vostok.Configuration.Sources.Watchers.WatcherCache`2.Watch(`0)">
+            <summary>
+            Obtain a settings watcher for the given <paramref name="key"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Access">
+            <summary>Only entity marked with attribute considered used.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Assign">
+            <summary>Indicates implicit assignment to a member.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature">
+            <summary>
+            Indicates implicit instantiation of a type with fixed constructor signature.
+            That means any unused constructor parameters won't be reported as such.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature">
+            <summary>Indicates implicit instantiation of a type.</summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ImplicitUseTargetFlags">
+            <summary>
+            Specify what is considered used implicitly when marked
+            with <see cref="T:JetBrains.Annotations.MeansImplicitUseAttribute"/> or <see cref="T:JetBrains.Annotations.UsedImplicitlyAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseTargetFlags.Members">
+            <summary>Members of entity marked with attribute are considered used.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseTargetFlags.WithMembers">
+            <summary>Entity marked with attribute and all its members considered used.</summary>
+        </member>
+        <member name="T:JetBrains.Annotations.CanBeNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could be <c>null</c> sometimes,
+            so the check for <c>null</c> is necessary before its usage.
+            </summary>
+            <example><code>
+            [CanBeNull] object Test() => null;
+            
+            void UseTest() {
+              var p = Test();
+              var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
+            }
+            </code></example>
+        </member>
+        <member name="T:JetBrains.Annotations.NotNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could never be <c>null</c>.
+            </summary>
+            <example><code>
+            [NotNull] object Foo() {
+              return null; // Warning: Possible 'null' assignment
+            }
+            </code></example>
+        </member>
+        <member name="T:JetBrains.Annotations.StringFormatMethodAttribute">
+            <summary>
+            Indicates that the marked method builds string by format pattern and (optional) arguments.
+            Parameter, which contains format string, should be given in constructor. The format string
+            should be in <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])"/>-like form.
+            </summary>
+            <example><code>
+            [StringFormatMethod("message")]
+            void ShowError(string message, params object[] args) { /* do something */ }
+            
+            void Foo() {
+              ShowError("Failed: {0}"); // Warning: Non-existing argument in format string
+            }
+            </code></example>
+        </member>
+        <member name="M:JetBrains.Annotations.StringFormatMethodAttribute.#ctor(System.String)">
+            <param name="formatParameterName">
+            Specifies which parameter of an annotated method should be treated as format-string
+            </param>
+        </member>
+        <member name="T:JetBrains.Annotations.UsedImplicitlyAttribute">
+            <summary>
+            Indicates that the marked symbol is used implicitly (e.g. via reflection, in external library),
+            so this symbol will not be marked as unused (as well as by other usage inspections).
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.PureAttribute">
+            <summary>
+            Indicates that a method does not make any observable state changes.
+            The same as <c>System.Diagnostics.Contracts.PureAttribute</c>.
+            </summary>
+            <example><code>
+            [Pure] int Multiply(int x, int y) => x * y;
+            
+            void M() {
+              Multiply(123, 42); // Waring: Return value of pure method is not used
+            }
+            </code></example>
+        </member>
+        <member name="T:JetBrains.Annotations.MeansImplicitUseAttribute">
+            <summary>
+            Should be used on attributes and causes ReSharper to not mark symbols marked with such attributes
+            as unused (as well as by other usage inspections)
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.PublicAPIAttribute">
+            <summary>
+            This attribute is intended to mark publicly available API
+            which should not be removed and so is treated as used.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ItemNotNullAttribute">
+            <summary>
+            Can be appplied to symbols of types derived from IEnumerable as well as to symbols of Task
+            and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+            or of the Lazy.Value property can never be null.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ItemCanBeNullAttribute">
+            <summary>
+            Can be appplied to symbols of types derived from IEnumerable as well as to symbols of Task
+            and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+            or of the Lazy.Value property can be null.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ValueProviderAttribute">
+            <summary>
+            For a parameter that is expected to be one of the limited set of values.
+            Specify fields of which type should be used as values for this parameter.
+            </summary>
+        </member>
+    </members>
+</doc>
