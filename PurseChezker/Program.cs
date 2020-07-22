@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -203,6 +205,8 @@ namespace PurseChezker {
                 " ",
                 "[>] Threads: " + threads,
                 " ",
+                "[>] Retries: " + retries,
+                " ",
                 "[>] Hit capture: " + hitCapture,
                 "[>] Fail capture: " + failCapture,
                 " ",
@@ -336,13 +340,13 @@ namespace PurseChezker {
                 try {
                     switch (proxytype) {
                         case "HTTPS":
-                            http.Proxy = HttpProxyClient.Parse(proxyIp + proxyPort);
+                            http.Proxy = HttpProxyClient.Parse(proxyIp + ":" + proxyPort);
                             break;
                         case "SOCK4":
-                            http.Proxy = Socks4ProxyClient.Parse(proxyIp + proxyPort);
+                            http.Proxy = Socks4ProxyClient.Parse(proxyIp + ":" + proxyPort);
                             break;
                         case "SOCK5":
-                            http.Proxy = Socks5ProxyClient.Parse(proxyIp + proxyPort);
+                            http.Proxy = Socks5ProxyClient.Parse(proxyIp + ":" + proxyPort);
                             break;
                     }
 
